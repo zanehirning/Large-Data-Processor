@@ -6,4 +6,4 @@ This data set can be generated from a full copy of the data file `../USA_full/20
     cat header.csv trimmed.csv > 2020.annual.singlefile.csv
     rm header.csv dat.csv trimmed.csv
 
-*Note: You may use your own implementation of `tt.py` if it has been **installed**. See [Installing_Text_Tools.md](../instructions/Installing_Text_Tools.md) for details and the modifications needed to the above sequence of commands.*
+*Note: You may use your own implementation of `tt.py` if it has been **installed**. See [Installing_Text_Tools.md](../../instructions/Installing_Text_Tools.md) for details and the modifications needed to the above sequence of commands.*
