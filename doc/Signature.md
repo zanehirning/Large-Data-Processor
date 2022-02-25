@@ -2,7 +2,9 @@
 
 | Date         | Time Spent | Events
 |--------------|------------|--------------------
-| Nocember 10  | 1 hour     | Wrote requirements specification and system analysis
-| Nocember 11  | 45 minutes | Wrote system design; revised requirements and system analysis
-| Nocember 12  | 1 hour     | Prototyped the menu; revised software plan
-| Nocember 13  | 2.5 hours  | Initial implementation; main menu and prompts done; can open a file and print contents; decryption is all jambled
+| February 18  | 1 hour     | Reading the instructions, understanding them throroughly
+| February 19  | 1.5 hours  | Completed the first and second phase of the SDP
+| February 20  | 1.5 hours  | Prototyped the menu; revised software plan
+| February 22  | 2.5 hours  | Worked on implementation phase, at this point, it is almost complete, and should not take long.
+| February 23  | 1.5 hours  | Finished implementation phase, starting debugging.
+| February 24  | 3 hours    | Final debugging, project is complete, ready to push.

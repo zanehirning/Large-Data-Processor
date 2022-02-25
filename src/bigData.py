@@ -31,48 +31,105 @@ from Report import Report
 
 rpt = Report(year=2020)                                             	         	  
 
-if __name__ == '__main__':                                          	         	  
-    print("TODO: if sys.argv[1] is not given, print a usage message and exit")  # DELETE ME
+if __name__ == '__main__':
+    print("Reading the databases...", file=sys.stderr)
+    before = time.time()
+    if len(sys.argv)-1 == 0:
+        print("Error: No directory was given.")
+    else:
+        a = sys.argv[1]
+        FIPS = {}
+        file = open(f'{a}/area_titles.csv')
+        file.readline()
+        for line in file:
+            kv = line.rstrip().split(',')
+            if 'C' in kv[0]:
+                continue
+            elif 'US' in kv[0]:
+                continue
+            elif '000' in kv[0][3:6]:
+                continue
+            else:
+                if 'County' in kv[1]:
+                    FIPS[kv[0]] = kv[len(kv)-2] + ',' + kv[len(kv)-1]
+                else:
+                    FIPS[kv[0]] = kv[len(kv)-1]
+                continue
 
-    print("Reading the databases...", file=sys.stderr)              	         	  
-    before = time.time()                                            	         	  
+        file.close()
+#-----------------------------------------------------------------------------------------------------------------------
+        softInfo = {}
+        allInfo = {}
+        allEstabLst = []
+        allWageLst = []
+        allEmplLst = []
+        softEstabLst = []
+        softWageLst = []
+        softEmplLst = []
+        fobj = open(f'{a}/2020.annual.singlefile.csv')
+        fobj.readline()
+        for line in fobj:
+            if line[0:7] in FIPS:
+                k = line.rstrip().split(',')
+                if k[2] == '"5112"' and k[1] == '"5"':
+                    softInfo[k[0]] = line
+                    rpt.soft.num_areas = len(softInfo)
+                    rpt.soft.total_annual_wages += int(k[10])
+                    rpt.soft.total_estab += int(k[8])
+                    rpt.soft.total_empl += int(k[9])
+# max annual wage
 
-    print("TODO: if opening the file 'sys.argv[1]/area_titles.csv' fails, let your program crash here")  # DELETE ME
-    print("TODO: Convert the file 'sys.argv[1]/area_titles.csv' into a dictionary")  # DELETE ME
+                    softWageLst.append(int(k[10]))
+                    a = max(softWageLst)
+                    if str(a) == k[10]:
+                        max_key = max(softInfo, key=softInfo.get(str(a)))
+                        rpt.soft.max_annual_wage = [FIPS[max_key].strip('"').lstrip(), int(a)]
+# max establishments
 
-    print("TODO: if opening the file 'sys.argv[1]/2020.annual.singlefile.csv' fails, let your program crash here")  # DELETE ME
-    print("TODO: Collect information from 'sys.argv[1]/2020.annual.singlefile.csv', place into the Report object rpt")  # DELETE ME
+                    softEstabLst.append(int(k[8]))
+                    a = max(softEstabLst)
+                    if str(a) == k[8]:
+                        max_key = max(softInfo, key=softInfo.get(str(a)))
+                        rpt.soft.max_estab = [FIPS[max_key].strip('"').lstrip(), int(a)]
+# max employment
 
-    after = time.time()                                             	         	  
-    print(f"Done in {after - before:.3f} seconds!", file=sys.stderr)	         	  
+                    softEmplLst.append(int(k[9]))
+                    a = max(softEmplLst)
+                    if str(a) == k[9]:
+                        max_key = max(softInfo, key=softInfo.get(str(a)))
+                        rpt.soft.max_empl = [FIPS[max_key].strip('"').lstrip(), int(a)]
 
-    print("TODO: Fill in the report for all industries")  # DELETE ME         	  
-    rpt.all.num_areas           = 1337                              	         	  
+                elif k[2] == '"10"' and k[1] == '"0"':
+                    allInfo[k[0]] = line
+                    rpt.all.num_areas = len(allInfo)
+                    rpt.all.total_annual_wages += int(k[10])
+                    rpt.all.total_estab += int(k[8])
+                    rpt.all.total_empl += int(k[9])
+#max annual wage
 
-    rpt.all.total_annual_wages  = 13333337                          	         	  
-    rpt.all.max_annual_wage     = ["Trantor", 123456]               	         	  
+                    allWageLst.append(int(k[10]))
+                    a = max(allWageLst)
+                    if str(a) == k[10]:
+                        max_key = max(allInfo, key=allInfo.get(k[10]))
+                        rpt.all.max_annual_wage = [FIPS[max_key].strip('"').lstrip(), int(a)]
+#max establishments
 
-    rpt.all.total_estab         = 42                                	         	  
-    rpt.all.max_estab           = ["Terminus", 12]                  	         	  
+                    allEstabLst.append(int(k[8]))
+                    a = max(allEstabLst)
+                    if str(a) == k[8]:
+                        max_key = max(allInfo, key=allInfo.get(str(a)))
+                        rpt.all.max_estab = [FIPS[max_key].strip('"').lstrip(), int(a)]
+#max employment
+                    allEmplLst.append(int(k[9]))
+                    a = max(allEmplLst)
+                    if str(a) == k[9]:
+                        max_key = max(allInfo, key=allInfo.get(str(a)))
+                        rpt.all.max_empl = [FIPS[max_key].strip('"').lstrip(), int(a)]
+                else:
+                    continue
 
-    rpt.all.total_empl          = 987654                            	         	  
-    rpt.all.max_empl            = ["Anacreon", 654]                 	         	  
+        fobj.close()
+    after = time.time()
+    print(f"Done in {after - before:.3f} seconds!", file=sys.stderr)
+    print(rpt)
 
-
-    print("TODO: Fill in the report for the software publishing industry")  # DELETE ME
-    rpt.soft.num_areas          = 1010                              	         	  
-
-    rpt.soft.total_annual_wages = 101001110111                      	         	  
-    rpt.soft.max_annual_wage    = ["Helicon", 110010001]            	         	  
-
-    rpt.soft.total_estab        = 1110111                           	         	  
-    rpt.soft.max_estab          = ["Solaria", 11000]                	         	  
-
-    rpt.soft.total_empl         = 100010011                         	         	  
-    rpt.soft.max_empl           = ["Gaia", 10110010]                	         	  
-
-
-    # Print the completed report                                    	         	  
-    print(rpt)                                                      	         	  
-
-    print("\n\nTODO: did you delete all of these TODO messages?")  # DELETE ME	  

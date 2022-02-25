@@ -4,84 +4,185 @@
 
 **Deliver:**
 
-*   A detailed written description of the problem this program aims to solve.
-*   Describe what a *good* solution looks like.
-    *   List what you already know how to do.
-    *   Point out any challenges that you can foresee.
+- This program will process and analyze a large data set and report the findings.
+- The findings will be placed into the report, the report will print out the correct findings.
+- This program will report correct findings despite the manipulation of the file, whether it is reversed, etc.
+- A good solution will correctly report the findings, print out a usage message if no input is given, let python crash if dataset isn't an int. (eval() is evil)
 
+
+- I know how to read a file line by line
+- I know how manipulate strings
+- I will need to watch the lecture and figure out how dictionary's work, this will aid my solution.
+- FIPS codes may present an issue.
 
 ## Phase 1: System Analysis *(10%)*
 
 **Deliver:**
 
-*   List all of the data that is used by the program, making note of where it comes from.
-*   Explain what form the output will take.
-*   Describe what algorithms and formulae will be used (but don't write them yet).
+- A directory will be provided by the user via the command line.
+- The output will take the form of the provided report.
+- The report will not include US aggregate data, per-state aggregate data, nor should it consider metropolitan areas
+- This assignment will probably utilize for loops in order to loop through the file line by line.
 
 
 ## Phase 2: Design *(30%)*
 
 **Deliver:**
 
-*   Function signatures that include:
-    *   Descriptive names.
-    *   Parameter lists.
-    *   Documentation strings that explain the purpose, inputs and outputs.
-*   Pseudocode that captures how each function works.
-    *   Pseudocode != source code.  Do not paste your finished source code into this part of the plan.
-    *   Explain what happens in the face of good and bad input.
-    *   Write a few specific examples that occurred to you.
-
-
+```
+def main(sys.argv):
+    Takes directory from user, changes to that directory, and read the hardcoded files:`area_titles.csv` and `2020.annual.singlefile.csv`
+    Utilize a dictionary in order to process FIPS
+    Disclude certain FIPS if certain values are found("000", "C", US)
+    Converts a string into an integer
+    Uses a *probably* for loop to loop through the file line by line.
+    Place values in software industry vs all industry based on "own code" and "industry code"
+    print a usage error if no directory is given.
+```
 ## Phase 3: Implementation *(15%)*
 
 **Deliver:**
 
-*   (More or less) working code.
-*   Note any relevant and interesting events that happened while you wrote the code.
-    *   e.g. things you learned, things that didn't go according to plan
+```python
+if __name__ == '__main__':
+    print("Reading the databases...", file=sys.stderr)
+    before = time.time()
+    if len(sys.argv)-1 == 0:
+        print("Error: No directory was given.")
+    else:
+        a = sys.argv[1]
+        FIPS = {}
+        file = open(f'{a}/area_titles.csv')
+        file.readline()
+        for line in file:
+            kv = line.rstrip().split(',')
+            if 'C' in kv[0]:
+                continue
+            elif 'US' in kv[0]:
+                continue
+            elif '000' in kv[0][3:6]:
+                continue
+            else:
+                if 'County' in kv[1]:
+                    FIPS[kv[0]] = kv[len(kv)-2] + ',' + kv[len(kv)-1]
+                else:
+                    FIPS[kv[0]] = kv[len(kv)-1]
+                continue
+
+        file.close()
+#-----------------------------------------------------------------------------------------------------------------------
+        softInfo = {}
+        allInfo = {}
+        allEstabLst = []
+        allWageLst = []
+        allEmplLst = []
+        softEstabLst = []
+        softWageLst = []
+        softEmplLst = []
+        fobj = open(f'{a}/2020.annual.singlefile.csv')
+        fobj.readline()
+        for line in fobj:
+            if line[0:7] in FIPS:
+                k = line.rstrip().split(',')
+                if k[2] == '"5112"' and k[1] == '"5"':
+                    softInfo[k[0]] = line
+                    rpt.soft.num_areas = len(softInfo)
+                    rpt.soft.total_annual_wages += int(k[10])
+                    rpt.soft.total_estab += int(k[8])
+                    rpt.soft.total_empl += int(k[9])
+# max annual wage
+
+                    softWageLst.append(int(k[10]))
+                    a = max(softWageLst)
+                    if str(a) == k[10]:
+                        max_key = max(softInfo, key=softInfo.get(str(a)))
+                        rpt.soft.max_annual_wage = [FIPS[max_key].strip('"').lstrip(), int(a)]
+# max establishments
+
+                    softEstabLst.append(int(k[8]))
+                    a = max(softEstabLst)
+                    if str(a) == k[8]:
+                        max_key = max(softInfo, key=softInfo.get(str(a)))
+                        rpt.soft.max_estab = [FIPS[max_key].strip('"').lstrip(), int(a)]
+# max employment
+
+                    softEmplLst.append(int(k[9]))
+                    a = max(softEmplLst)
+                    if str(a) == k[9]:
+                        max_key = max(softInfo, key=softInfo.get(str(a)))
+                        rpt.soft.max_empl = [FIPS[max_key].strip('"').lstrip(), int(a)]
+
+                elif k[2] == '"10"' and k[1] == '"0"':
+                    allInfo[k[0]] = line
+                    rpt.all.num_areas = len(allInfo)
+                    rpt.all.total_annual_wages += int(k[10])
+                    rpt.all.total_estab += int(k[8])
+                    rpt.all.total_empl += int(k[9])
+#max annual wage
+
+                    allWageLst.append(int(k[10]))
+                    a = max(allWageLst)
+                    if str(a) == k[10]:
+                        max_key = max(allInfo, key=allInfo.get(k[10]))
+                        rpt.all.max_annual_wage = [FIPS[max_key].strip('"').lstrip(), int(a)]
+#max establishments
+
+                    allEstabLst.append(int(k[8]))
+                    a = max(allEstabLst)
+                    if str(a) == k[8]:
+                        max_key = max(allInfo, key=allInfo.get(str(a)))
+                        rpt.all.max_estab = [FIPS[max_key].strip('"').lstrip(), int(a)]
+#max employment
+                    allEmplLst.append(int(k[9]))
+                    a = max(allEmplLst)
+                    if str(a) == k[9]:
+                        max_key = max(allInfo, key=allInfo.get(str(a)))
+                        rpt.all.max_empl = [FIPS[max_key].strip('"').lstrip(), int(a)]
+                else:
+                    continue
+```                    
+
+- Throughout this assignment, there were a lot of things I had to learn dealing with dictionaries. When I was unable to figure out certain processes with dictionaries, I would append them to lists and do list operations.
+- While testing, I ran into several issues because I was only testing a few .csv files. The csv files I tested did not cover all cases, this caused me to reassess my code for certain instances.
+- I had issues with the finding the areas of the "max" portions, as well as finding the max portions. I then decided to use lists to manipulate information.
+- The "total" parts of the report went very smoothly, those seemed to be the easiest part about the assignment.
+
 
 
 ## Phase 4: Testing & Debugging *(30%)*
 
 **Deliver:**
-
-*   A set of test cases that you have personally run on your computer.
-    *   Include a description of what happened for each test case.
-    *   For any bugs discovered, describe their cause and remedy.
-*   Write your test cases in plain language such that a non-coder could run them and replicate your experience.
+- I did not create any personal tests, however, I did utilize 6-7 of the csv files, as well as USA_full to guaranty my code was working.
+- Each case usually presented a different issue, I wasn't printing out the "x County" part, as well as issues with finding the key that corresponded with a max value.
+- This was because I was just taking the last argument in the dictionary, I fixed this by searching for 'County' in the dictionary.
+- Finding the max values was an easier fix, it was a simple if statement.
 
 
 ## Phase 5: Deployment *(5%)*
 
 **Deliver:**
 
-*   Your repository pushed to GitLab.
-*   **Verify** that your final commit was received by browsing to its project page on GitLab.
-    *   Ensure the project's URL is correct.
-    *   Review the project to ensure that all required files are present and in correct locations.
-    *   Check that unwanted files have not been included.
-    *   Make any final touches to documentation, including the Sprint Signature and this Plan.
-*   **Validate** that your submission is complete and correct by cloning it to a new location on your computer and re-running it.
-	*	Run your program from the command line so you can see how it will behave when your grader runs it.  **Running it in PyCharm is not good enough!**
-    *   Run through your test cases to avoid nasty surprises.
-    *   Check that your documentation files are all present.
+- My repository was pushed to GitLab, the final commit was present. Prior to pushing, I tested my code on several different files from the command line, the output seemed correct and should work on the grader's computer.
 
 
 ## Phase 6: Maintenance
 
 **Deliver:**
 
-*   Write brief and honest answers to these questions: *(Note: do this before you complete **Phase 5: Deployment**)*
-    *   What parts of your program are sloppily written and hard to understand?
-        *   Are there parts of your program which you aren't quite sure how/why they work?
-        *   If a bug is reported in a few months, how long would it take you to find the cause?
-    *   Will your documentation make sense to...
-        *   ...anybody besides yourself?
-        *   ...yourself in six month's time?
-    *   How easy will it be to add a new feature to this program in a year?
-    *   Will your program continue to work after upgrading...
-        *   ...your computer's hardware?
-        *   ...the operating system?
-        *   ...to the next version of Python?
-*   Fill out the Assignment Reflection on Canvas.
+###1.
+- For the most part, I feel as if my code is fairly readable. I tried to seperate out the different portions of my code with comments. The comments are supposed to describe what is happening in that section of code.
+- Most of my code is pretty understandable from my view, the code makes sense to me and how/why it works seems simple enough.
+- Most of my debugging consisted of print statement debugging. If a problem were to arise, I feel like I could utilize this method to resolve the bug quickly.
+
+###2.
+- This code should make sense to most people, there were some portions where I could have used more descriptive variables, but overall my variables and comments were placed well in order to help people understand.
+- This code will make sense to me in six months, this code is fairly well constructed. (in my opinion)
+
+###3.
+- It depends on the implementation. If it just requires searching for more data, then it should be easy enough. Especially if python has an inbuilt function.
+
+###4.
+- This program should work on new hardware, and would probably work better on new hardware.
+- This program should work on new or different OS's.
+- As long as the next versions don't change how dictionaries and any functions in my program work, it should run on the next version.
+
