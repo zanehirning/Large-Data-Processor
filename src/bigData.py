@@ -129,6 +129,8 @@ if __name__ == '__main__':
                     continue
 
         fobj.close()
+    #print("Reading the databases...", file=sys.stderr)
+    #before = time.time()
     after = time.time()
     print(f"Done in {after - before:.3f} seconds!", file=sys.stderr)
     print(rpt)
