@@ -83,21 +83,21 @@ if __name__ == '__main__':
                     a = max(softWageLst)
                     if str(a) == k[10]:
                         max_key = max(softInfo, key=softInfo.get(str(a)))
-                        rpt.soft.max_annual_wage = [FIPS[max_key].strip('"').lstrip(), int(a)]
+                        rpt.soft.max_annual_wage = [FIPS[k[0]].strip('"').lstrip(), int(a)]
 # max establishments
 
                     softEstabLst.append(int(k[8]))
                     a = max(softEstabLst)
                     if str(a) == k[8]:
                         max_key = max(softInfo, key=softInfo.get(str(a)))
-                        rpt.soft.max_estab = [FIPS[max_key].strip('"').lstrip(), int(a)]
+                        rpt.soft.max_estab = [FIPS[k[0]].strip('"').lstrip(), int(a)]
 # max employment
 
                     softEmplLst.append(int(k[9]))
                     a = max(softEmplLst)
                     if str(a) == k[9]:
                         max_key = max(softInfo, key=softInfo.get(str(a)))
-                        rpt.soft.max_empl = [FIPS[max_key].strip('"').lstrip(), int(a)]
+                        rpt.soft.max_empl = [FIPS[k[0]].strip('"').lstrip(), int(a)]
 
                 elif k[2] == '"10"' and k[1] == '"0"':
                     allInfo[k[0]] = line
@@ -111,20 +111,20 @@ if __name__ == '__main__':
                     a = max(allWageLst)
                     if str(a) == k[10]:
                         max_key = max(allInfo, key=allInfo.get(k[10]))
-                        rpt.all.max_annual_wage = [FIPS[max_key].strip('"').lstrip(), int(a)]
+                        rpt.all.max_annual_wage = [FIPS[k[0]].strip('"').lstrip(), int(a)]
 #max establishments
 
                     allEstabLst.append(int(k[8]))
                     a = max(allEstabLst)
                     if str(a) == k[8]:
                         max_key = max(allInfo, key=allInfo.get(str(a)))
-                        rpt.all.max_estab = [FIPS[max_key].strip('"').lstrip(), int(a)]
+                        rpt.all.max_estab = [FIPS[k[0]].strip('"').lstrip(), int(a)]
 #max employment
                     allEmplLst.append(int(k[9]))
                     a = max(allEmplLst)
                     if str(a) == k[9]:
                         max_key = max(allInfo, key=allInfo.get(str(a)))
-                        rpt.all.max_empl = [FIPS[max_key].strip('"').lstrip(), int(a)]
+                        rpt.all.max_empl = [FIPS[k[0]].strip('"').lstrip(), int(a)]
                 else:
                     continue
 
