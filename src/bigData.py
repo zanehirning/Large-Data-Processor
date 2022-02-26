@@ -32,8 +32,7 @@ from Report import Report
 rpt = Report(year=2020)                                             	         	  
 
 if __name__ == '__main__':
-    print("Reading the databases...", file=sys.stderr)
-    before = time.time()
+
     if len(sys.argv)-1 == 0:
         print("Error: No directory was given.")
     else:
@@ -66,6 +65,8 @@ if __name__ == '__main__':
         softEstabLst = []
         softWageLst = []
         softEmplLst = []
+        print("Reading the databases...", file=sys.stderr)
+        before = time.time()
         fobj = open(f'{a}/2020.annual.singlefile.csv')
         fobj.readline()
         for line in fobj:
@@ -127,11 +128,8 @@ if __name__ == '__main__':
                         rpt.all.max_empl = [FIPS[k[0]].strip('"').lstrip(), int(a)]
                 else:
                     continue
-
         fobj.close()
-    #print("Reading the databases...", file=sys.stderr)
-    #before = time.time()
-    after = time.time()
-    print(f"Done in {after - before:.3f} seconds!", file=sys.stderr)
-    print(rpt)
+        after = time.time()
+        print(f"Done in {after - before:.3f} seconds!", file=sys.stderr)
+        print(rpt)
 
